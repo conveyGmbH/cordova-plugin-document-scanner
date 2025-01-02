@@ -46,7 +46,7 @@ var fileIO = Windows.Storage.FileIO;
  *
  * @returns {Promise<String>} Camera id
  */
-function findCamera() {
+function findCamera(bFront) {
     var Devices = Windows.Devices.Enumeration;
 
     // Enumerate cameras and add them to the list
@@ -58,7 +58,8 @@ function findCamera() {
         }
 
         var backCameras = cameras.filter(function (camera) {
-            return camera.enclosureLocation && camera.enclosureLocation.panel === Devices.Panel.back;
+            return camera.enclosureLocation && camera.enclosureLocation.panel ===
+                (bFront ? Devices.Panel.front : Devices.Panel.back);
         });
 
         // If there is back cameras, return the id of the first,
@@ -1366,7 +1367,7 @@ module.exports = {
          */
         function startPreview() {
             var captureSettings = null;
-            return findCamera()
+            return findCamera(getSourceType() === 2)
             .then(function (id) {
                 var captureInitSettings, videoDeviceController;
                 try {
