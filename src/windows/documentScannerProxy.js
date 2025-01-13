@@ -1423,7 +1423,7 @@ module.exports = {
                 });
                 var aspect = sortedAspectRatios[0];
 
-                var maxResolution = getDesiredMaxResolution() || 5000000;
+                var maxResolution = getDesiredMaxResolution() || 8300000;
 
                 // Max photo resolution with desired aspect ratio
                 var videoDeviceController = capture.videoDeviceController;
@@ -1432,7 +1432,7 @@ module.exports = {
                 var filteredResolutions;
                 if (photoProperties) {
                     filteredResolutions = photoProperties.filter(function(elem) {
-                        return ((elem.width / elem.height).toFixed(1) === aspect && elem.width * elem.height <= maxResolution);
+                        return ((elem.width / elem.height).toFixed(1) === aspect && elem.width * elem.height <= maxResolution && elem.type==="Video");
                     });
                     if (filteredResolutions && filteredResolutions.length > 0) {
                         // Max photo resolution with desired aspect ratio and <= maxResolution
@@ -1442,7 +1442,7 @@ module.exports = {
                     } else {
                         // Min photo resolution with desired aspect ratio
                         photoResolution = photoProperties.filter(function(elem) {
-                            return ((elem.width / elem.height).toFixed(1) === aspect);
+                            return ((elem.width / elem.height).toFixed(1) === aspect && elem.type === "Video");
                         }).reduce(function(prop1, prop2) {
                             return (prop1.width * prop1.height) < (prop2.width * prop2.height) ? prop1 : prop2;
                         });
@@ -1478,7 +1478,7 @@ module.exports = {
                     height: videoProps.height
                 }
 
-                if (photoResolution.length > 0) {
+                if (photoResolution.width > 0 && photoResolution.height > 0) {
                     return videoDeviceController.setMediaStreamPropertiesAsync(Windows.Media.Capture.MediaStreamType.photo, photoResolution).then(function () {
                         return videoDeviceController.setMediaStreamPropertiesAsync(Windows.Media.Capture.MediaStreamType.videoPreview, videoPreviewResolution);
                     });
@@ -1488,7 +1488,7 @@ module.exports = {
             })
             .then(function () {
                 if (photoProperties) {
-                    var encodingProperties = Windows.Media.MediaProperties.ImageEncodingProperties.createUncompressed(Windows.Media.MediaProperties.MediaPixelFormat.bgra8);
+                    var encodingProperties = Windows.Media.MediaProperties.ImageEncodingProperties.createUncompressed(Windows.Media.MediaProperties.MediaPixelFormat.bgra8);//createJpeg();
                     return capture.prepareLowLagPhotoCaptureAsync(encodingProperties).then(function(llc) {
                         lowLagPhotoCapture = llc;
                     });

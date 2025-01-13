@@ -18,14 +18,14 @@ module.exports = {
 		}
 		argscheck.checkArgs('fFO', 'scanDoc', arguments);
         options = options || {};
-		options.sourceType = (options.sourceType !== 1) ? 0 : options.sourceType;
+        options.sourceType = (options.sourceType !== 1 && options.sourceType !== 2) ? 0 : options.sourceType;
 		options.fileName = (typeof options.fileName === "string") ? options.fileName : "image";
 		options.quality = (!isNaN(options.quality) && options.quality >= 1 && options.quality <= 5) ? options.quality : 1;
 		options.returnBase64 = (typeof options.returnBase64 === "boolean") ? options.returnBase64 : false;
 
-    	if(options.sourceType === 1 || options.sourceType === 0)
+        if (options.sourceType === 2 || options.sourceType === 1 || options.sourceType === 0)
     	{
-			var sourceType = options.sourceType;	// 0 Gallery, 1 Camera
+			var sourceType = options.sourceType;	// 0 Gallery, 1 Camera, 2 Front Camera
 			var fileName = options.fileName;	// "image" if not specified
 			var quality = options.quality;	// Quality defaults to 1 (highest). If value > 1, a smaller image is returned to save memory. https://developer.android.com/reference/android/graphics/BitmapFactory.Options.html#inSampleSize
 			var returnBase64 = options.returnBase64;	// return base64 output if set to true. Defaults to false.
